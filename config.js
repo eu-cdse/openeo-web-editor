@@ -1,5 +1,5 @@
 const attributions = '© <a href="https://www.mapbox.com/about/maps/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> <strong><a href="https://www.mapbox.com/map-feedback/" target="_blank">Improve this map</a></strong>';
-const mapbox_access_token = 'pk.eyJ1Ijoib3BlbmVvLXBsYXRmb3JtLXd3dSIsImEiOiJja3g0ejcweDYyMDJwMnlwemoxNWZzODhkIn0.laahiz1GmTRq-XhZ29eaDQ';
+const mapbox_access_token = 'pk.eyJ1IjoiZ2VvZGF0YWRldiIsImEiOiJjbGhpdDNzN20wYmk2M3FudW9oeTg4ZjhtIn0.nDEBWyUjvSBy7ozwFbLL6Q';
 
 export default {
 	// Set this to connect to a back-end automatically when opening the Web Editor,
@@ -8,9 +8,9 @@ export default {
 	serverUrl: 'https://openeo.cloud',
 
 	// The name of the service
-	serviceName: 'openEO Platform',
+	serviceName: 'Copernicus Data Space Ecosystem',
 	// The name of the app
-	appName: 'Editor',
+	appName: 'OpenEO Web Editor',
 
 	// Skip login and automatically load up the "discovery mode"
 	skipLogin: true,
@@ -29,7 +29,7 @@ export default {
 	loginMessage: '',
 
 	// The logo to show
-	logo: 'https://openeo.cloud/wp-content/themes/openeo_platform/images/logo-pages.svg',
+	logo: 'https://dataspace.copernicus.eu/themes/custom/copernicus/logo.svg',
 
 	// Defaults for notifications
 	snotifyDefaults: {
