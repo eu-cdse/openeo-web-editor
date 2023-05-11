@@ -1,10 +1,97 @@
-$linkColor: #960136;
-$mainColor: #003247;
+$linkColor: black;
+$mainColor: #0A4393;
+$mainColorContrast: white;
+$secondaryColor: #77cc09;
+$secondaryColorContrast: white;
 
-#ide header.navbar {
-	border-bottom: 4px solid #335E6F;
+$fontFamily: 'Arial';
+$defaultFontSize: 14px;
+
+
+body {
+	font-size: $defaultFontSize;
+	scroll-behavior:smooth
 }
 
-.modal .modal-header {
-	border-bottom: 4px solid #335E6F;
+body, input, textarea, button, select, datalis {
+	font-family: $fontFamily;
+	-webkit-font-smoothing:antialiased;
+	-moz-osx-font-smoothing:grayscale;
+}
+
+// NavBar
+
+#ide .logo {
+	align-content: center;
+}
+
+#ide .logo h2 {
+	flex: 1;
+	text-align: center;
+	font-weight: bold !important;
+	font-size: 32px !important;
+}
+
+#ide .logo h2 .version {
+	font-weight: normal;
+	display: none;
+}
+
+#ide header.navbar::after {
+	content: "";
+	background: linear-gradient(270deg, #77cc09, #fc0, #77cc09);
+	background-size: 200% 100%;
+	animation: 3s linear infinite page--header-grad;
+	position: absolute;
+	height: 6px;
+	left: 0;
+	right: 0;
+	bottom: 0;
+}
+
+@keyframes page--header-grad {
+
+	0%,
+	100% {
+		background-position: 0 100%
+	}
+
+	50% {
+		background-position: 100% 100%
+	}
+}
+
+a {
+	font-weight: bold;
+}
+
+.discovery-info strong {
+	color: $mainColor !important;
+}
+
+
+.help.info, .message.info {
+	background-color: $secondaryColor;
+	border: none;
+	color: $secondaryColorContrast;
+}
+
+.help.info, .message.info a {
+	color: $secondaryColorContrast;
+	text-decoration: underline;
+}
+
+
+// Builder
+
+.vue-component.model-builder .block_collection .blockTitle {
+	background-color: $mainColor;
+	color: $mainColorContrast;
+}
+
+.vue-component.model-builder .block_collection {
+	border-color: $mainColor;
+}
+.vue-component.model-builder .inout .inputs div, .vue-component.model-builder .inout .outputs div {
+	margin: .25rem 0;
 }
