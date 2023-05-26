@@ -5,7 +5,7 @@ export default {
 	// Set this to connect to a back-end automatically when opening the Web Editor,
 	// so you could set this to https://example.com and then the Web Editor connects
 	// to the corresponding back-end automatically.
-	serverUrl: 'https://openeo.cloud',
+	serverUrl: process.env.VUE_APP_SERVER_URL,
 
 	// The name of the service
 	serviceName: 'Copernicus Data Space Ecosystem',
