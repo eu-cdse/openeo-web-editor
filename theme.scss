@@ -49,6 +49,12 @@ body, input, textarea, button, select, datalis {
 	bottom: 0;
 }
 
+
+#menu li .dropdown {
+ top: 72px !important;
+ z-index: 999 !important;
+}
+
 @keyframes page--header-grad {
 
 	0%,
