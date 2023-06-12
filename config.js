@@ -78,36 +78,6 @@ export default {
 			url: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
 			attributions: osm_attributions,
 			maxZoom: 22,
-		},
-		{
-			title: 'Mapbox Streets',
-			url: `https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=${mapbox_access_token}`,
-			attributions,
-			maxZoom: 22
-		},
-		{
-			title: 'Mapbox Satellite',
-			url: `https://api.mapbox.com/styles/v1/mapbox/satellite-v9/tiles/{z}/{x}/{y}?access_token=${mapbox_access_token}`,
-			attributions,
-			maxZoom: 22
-		},
-		{
-			title: 'Mapbox Satellite + Streets',
-			url: `https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v11/tiles/{z}/{x}/{y}?access_token=${mapbox_access_token}`,
-			attributions,
-			maxZoom: 22
-		},
-		{
-			title: 'Mapbox Outdoors',
-			url: `https://api.mapbox.com/styles/v1/mapbox/outdoors-v11/tiles/{z}/{x}/{y}?access_token=${mapbox_access_token}`,
-			attributions,
-			maxZoom: 22
-		},
-		{
-			title: 'Mapbox Light',
-			url: `https://api.mapbox.com/styles/v1/mapbox/light-v10/tiles/{z}/{x}/{y}?access_token=${mapbox_access_token}`,
-			attributions,
-			maxZoom: 22
 		}
 	],
 
