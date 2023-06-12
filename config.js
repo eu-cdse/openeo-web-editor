@@ -1,4 +1,6 @@
 const attributions = '© <a href="https://www.mapbox.com/about/maps/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> <strong><a href="https://www.mapbox.com/map-feedback/" target="_blank">Improve this map</a></strong>';
+const osm_attributions = '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>'
+
 const mapbox_access_token = 'pk.eyJ1IjoiZ2VvZGF0YWRldiIsImEiOiJjbGhpdDNzN20wYmk2M3FudW9oeTg4ZjhtIn0.nDEBWyUjvSBy7ozwFbLL6Q';
 
 export default {
@@ -71,6 +73,12 @@ export default {
 
 	// Configure the (base)maps
 	basemaps: [
+		{
+			title: 'OSM',
+			url: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+			attributions: osm_attributions,
+			maxZoom: 22,
+		},
 		{
 			title: 'Mapbox Streets',
 			url: `https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=${mapbox_access_token}`,
