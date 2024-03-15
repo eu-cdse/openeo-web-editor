@@ -39,7 +39,9 @@
     "build:database": "node src/build-database.js",
     "start": "npm run build:database && npx vue-cli-service serve",
     "build-staging": "npm run build:database && npx vue-cli-service build --mode staging --report",
-    "build-prod": "npm run build:database && npx vue-cli-service build --mode prod --report"
+    "build-aggregator-staging": "npm run build:database && npx vue-cli-service build --mode aggregator-staging --report",
+    "build-prod": "npm run build:database && npx vue-cli-service build --mode prod --report",
+    "build-aggregator-prod": "npm run build:database && npx vue-cli-service build --mode aggregator-prod --report"
   },
   "dependencies": {
     "@kirtandesai/ol-geocoder": "^5.0.6",
