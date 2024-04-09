@@ -38,6 +38,8 @@
   "scripts": {
     "build:database": "node src/build-database.js",
     "start": "npm run build:database && npx vue-cli-service serve",
+    "build-development": "npm run build:database && npx vue-cli-service build --mode development --report",
+    "build-aggregator-dev": "npm run build:database && npx vue-cli-service build --mode aggregator-dev --report",
     "build-staging": "npm run build:database && npx vue-cli-service build --mode staging --report",
     "build-aggregator-stag": "npm run build:database && npx vue-cli-service build --mode aggregator-stag --report",
     "build-prod": "npm run build:database && npx vue-cli-service build --mode prod --report",
