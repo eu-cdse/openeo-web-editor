@@ -12,7 +12,6 @@ export default {
 	// The name of the service
 	serviceName: 'Copernicus Data Space Ecosystem',
 	// The name of the app
-	appName: 'OpenEO Web Editor',
   appName: process.env.VUE_APP_APP_NAME,
 
 	// Skip login and automatically load up the "discovery mode"
