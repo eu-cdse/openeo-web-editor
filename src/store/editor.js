@@ -2,6 +2,8 @@ import Vue from 'vue';
 import Utils from '../utils';
 import { Job, Service, UserProcess } from '@openeo/js-client';
 import { ProcessGraph } from '@openeo/js-processgraphs';
+import FormatRegistry from '../formats/formatRegistry.js';
+import StacMigrate from '@radiantearth/stac-migrate';
 
 const serverStorage = "serverUrls";
 
@@ -19,7 +21,9 @@ const getDefaultState = () => {
 		openWizard: null,
 		openWizardProps: {},
 		collectionPreview: null,
-		viewerOptions: {}
+		viewerOptions: {},
+		modelDnD: null,
+		formatRegistry: new FormatRegistry(),
 	};
 };
 
@@ -28,6 +32,53 @@ export default {
 	state: getDefaultState(),
 	getters: {
 		hasProcess: state => Utils.isObject(state.process) && Utils.size(state.process) > 0 && Utils.size(state.process.process_graph),
+		getModelNodeFromDnD: (state, getters, rootState, rootGetters) => () => {
+			return new Promise((resolve, reject) => {
+				if (!state.modelDnD) {
+					resolve(null);
+					return;
+				}
+				const getterFn = () => {
+					switch(state.modelDnD.type) {
+						case 'collection':
+							return {
+								process_id: 'load_collection',
+								arguments: rootGetters.collectionDefaults(state.modelDnD.data.id)
+							};
+						case 'process':
+							return {
+								process_id: state.modelDnD.data.id,
+								namespace: state.modelDnD.data.namespace,
+								arguments: {}
+							};
+						case 'udf':
+							return {
+								process_id: 'run_udf',
+								arguments: state.modelDnD.data
+							};
+						case 'fileformat':
+							return {
+								process_id: 'save_result',
+								arguments: {format: state.modelDnD.data.name, options: {}}
+							};
+						default:
+							return null;
+					}
+				};
+				if (state.modelDnD.loading) {
+					let id = setInterval(() => {
+						if (!state.modelDnD || state.modelDnD.loading) {
+							return;
+						}
+						clearInterval(id);
+						resolve(getterFn());
+					}, 50);
+				}
+				else {
+					resolve(getterFn());
+				}
+			});
+		}
 	},
 	actions: {
 		async loadEpsgCodes(cx) {
@@ -41,7 +92,7 @@ export default {
 				return; // Process already loaded (usually during a later login)
 			}
 			if (Utils.isUrl(cx.state.initialProcess)) {
-				let response = await axios(cx.state.initialProcess);
+				let response = await Utils.axios().get(cx.state.initialProcess);
 				if (Utils.isObject(response.data)) {
 					var pg = new ProcessGraph(response.data);
 					pg.parse();
@@ -72,18 +123,23 @@ export default {
 				return;
 			}
 
-			try {
-				let response = await axios(cx.state.appMode.resultUrl);
-				if (Utils.isObject(response.data)) {
-					cx.commit('setAppModeData', response.data);
+			if (cx.state.appMode.resultType !== 'service') {
+				try {
+					let response = await Utils.axios().get(cx.state.appMode.resultUrl);
+					if (Utils.isObject(response.data)) {
+						cx.commit('setAppModeData', response.data);
+					}
+				} catch (error) {
+					console.error(error);
+					throw new Error("Sorry, the shared data is not available anymore!");
 				}
-			} catch (error) {
-				console.error(error);
-				throw new Error("Sorry, the shared data is not available anymore!");
 			}
 		}
 	},
 	mutations: {
+		setModelDnD(state, obj = null) {
+			state.modelDnD = obj;
+		},
 		setDiscoverySearchTerm(state, searchTerm) {
 			state.discoverySearchTerm = typeof searchTerm === 'string' ? searchTerm : '';
 		},
@@ -94,24 +150,6 @@ export default {
 			state.initialNode = node;
 		},
 		setAppMode(state, appMode) {
-			if (appMode.channels) {
-				try {
-					appMode.channels = appMode.channels
-						.split(',')
-						.map((row, i) => {
-							let parts = row.split('|');
-							return {
-								id: parseInt(parts[0], 10),
-								name: parts[1],
-								min: parts[2] ? parseFloat(parts[2]) : undefined,
-								max: parts[3] ? parseFloat(parts[3]) : undefined
-							};
-						});
-				} catch (error) {
-					console.error(error);
-					delete appMode.channels;
-				}
-			}
 			state.appMode = {
 				...appMode,
 				title: 'Results',
@@ -120,6 +158,10 @@ export default {
 			};
 		},
 		setAppModeData(state, data) {
+			if (data.type) {
+				data = StacMigrate.stac(data, false);
+			}
+
 			Vue.set(state.appMode, 'data', data);
 
 			let process, title, expires;

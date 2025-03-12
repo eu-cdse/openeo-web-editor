@@ -8,6 +8,8 @@ export default (namespace, singular, plural, loadInitially = true) => {
 		},
 		data() {
 			return {
+				name: singular,
+				plualizedName: plural,
 				syncTimer: null,
 				lastSyncTime: null
 			};
@@ -22,10 +24,14 @@ export default (namespace, singular, plural, loadInitially = true) => {
 		},
 		computed: {
 			...Utils.mapState(namespace, {data: namespace}),
-			...Utils.mapGetters(namespace, ['supportsList', 'supportsCreate', 'supportsRead', 'supportsUpdate', 'supportsDelete'])
+			...Utils.mapState(namespace, ['pages', 'hasMore']),
+			...Utils.mapGetters(namespace, ['supportsList', 'supportsCreate', 'supportsRead', 'supportsUpdate', 'supportsDelete']),
+			next() {
+				return this.hasMore ? this.nextPage : null;
+			}
 		},
 		methods: {
-			...Utils.mapActions(namespace, ['list', 'create', 'read', 'update', 'delete']),
+			...Utils.mapActions(namespace, ['list', 'nextPage', 'create', 'read', 'update', 'delete']),
 			getTable() { // To be overridden
 				return this.$refs && this.$refs.table ? this.$refs.table : null;
 			},
@@ -61,6 +67,9 @@ export default (namespace, singular, plural, loadInitially = true) => {
 					Utils.exception(this, error, "Load " + singular + " error");
 				}
 			},
+			async reloadData() {
+				return await this.updateData(true);
+			},
 			async updateData(force = false) {
 				var table = this.getTable();
 				var nextSyncTime = Date.now() - this.getSyncInterval();
@@ -69,9 +78,6 @@ export default (namespace, singular, plural, loadInitially = true) => {
 				}
 				else if (!this.supportsList) {
 					table.setNoData("Sorry, listing stored " + plural + " is not supported by the server.");
-				}
-				else if (!this.supportsCreate) {
-					table.setNoData("Sorry, this feature is not supported by the server.");
 				}
 				else {
 					var isUpdate = this.data.length > 0;

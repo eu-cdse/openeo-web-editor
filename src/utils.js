@@ -1,10 +1,19 @@
 import VueUtils from '@openeo/vue-components/utils';
-import { Job, Service, UserFile, UserProcess } from '@openeo/js-client';
+import { Job, OpenEO, Service, UserFile, UserProcess } from '@openeo/js-client';
 import { mapState, mapActions, mapMutations, mapGetters } from 'vuex';
 import contentType from 'content-type';
 import Config from '../config';
+import axios from 'axios';
 
 class Utils extends VueUtils {
+
+	static axios() {
+		return OpenEO.Environment.axios;
+	}
+
+	static saveToFile(content, filename) {
+		return OpenEO.Environment.saveToFile(content, filename);
+	}
 
 	static getPreviewLinkFromSTAC(stac) {
 		if (Utils.isObject(stac) && Array.isArray(stac.links)) {
@@ -29,35 +38,6 @@ class Utils extends VueUtils {
 		}
 		else {
 			return typeof value === "string" && value.toLowerCase() === "nan" ? Number.NaN : value;
-		}
-	}
-
-	static displayRGBA(data, nodata = [NaN, null], hasAlpha = true) {
-		let NA = 'no data';
-		if (typeof data === 'undefined' || data === null) {
-			return NA;
-		}
-		let values = Array.from(data).map(v => parseFloat(v.toFixed(6)));
-		if (values.length === 0) {
-			return '-';
-		}
-
-		let a = 1;
-		if (hasAlpha && data.length > 1) {
-			a = values.pop();
-		}
-
-		// Transparent (no-data)
-		if (a === 0 || values.find(v => nodata.includes(v)) !== undefined) {
-			return NA;
-		}
-		// Grayscale (all values are the same)
-		else if (values.every(v => v === values[0])) {
-			return values[0];
-		}
-		// RGB and others
-		else {
-			return values.join(' | ');
 		}
 	}
 
@@ -208,8 +188,11 @@ class Utils extends VueUtils {
 	}
 
 	static param(name) {
-		const urlParams = new URLSearchParams(window.location.search); 
-		return urlParams.get(name); 
+		const urlParams = new URLSearchParams(window.location.search);
+		if (urlParams.has(name)) {
+			return urlParams.get(name);
+		}
+		return undefined;
 	}
 
 	static isBboxInWebMercator(bboxes) {
@@ -407,8 +390,15 @@ class Utils extends VueUtils {
 		return resolver(schema);
 	}
 	static extractUDPParams(process) {
-		let [id, ...namespace] = process.split('@');
-		return [id, namespace.join('@')];
+		const pos = process.indexOf('@');
+		if (pos < 0) {
+			return [process, undefined];
+		}
+		else {
+			const id = process.substring(0, pos);
+			const namespace = process.substring(pos + 1);
+			return [id, namespace];
+		}
 	}
 	static getProcessingExpression(stac) {
 		let key = 'processing:expression';
@@ -430,6 +420,10 @@ class Utils extends VueUtils {
 		else {
 			return null;
 		}
+	}
+
+	static confirmOpenAll(files) {
+		return confirm(`You are about to open ${files.length} individual files / tabs, which could slow down the web browser. Are you sure you want to open all of them?`);
 	}
 
 };
