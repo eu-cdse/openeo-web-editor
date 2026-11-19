@@ -11,5 +11,5 @@ RUN npm install
 RUN npm run build-$environment
 
 # Copy build folder and run with nginx
-FROM nginx:1.30.0-alpine
+FROM nginx:1.31.9-alpine
 COPY --from=build /src/openeo-web-editor/dist /usr/share/nginx/html
